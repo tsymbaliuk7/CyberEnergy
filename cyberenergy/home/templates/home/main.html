@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}
+CyberEnergy
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% load static %}
+<div class="container content">
+    <h1>Приветствую {{user.username}}!</h1>
+    <p style="margin-top: 20px">Воспользуйтесь инструметами сайта:</p>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'metrology:all' %}">
+                <div class="instrument-item metrology-item d-flex">
+                    <div style="background-color: white; height: 100%; width: 5px; border-radius: 2px; margin-right: 15px">
+                    </div>
+                    <div class="d-flex flex-column justify-content-between">
+                        <p>Анализ метрологических данных региона</p>
+                        <div style="margin-left: auto; margin-right: 0"><img style="height: 100px" src="{% static 'home/img/storm.svg' %}"></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="#">
+                <div style="background-color: #003459" class="instrument-item  d-flex">
+                    <div style="background-color: white; height: 100%; width: 4px; border-radius: 2px; margin-right: 15px">
+                    </div>
+                    <div class="d-flex flex-column justify-content-between">
+                        <p>Моделирования теплотехнических характеристик здания</p>
+                        <div style="margin-left: auto; margin-right: 0"><img style="height: 100px" src="{% static 'home/img/house.svg' %}"></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="container content">
+    <h1>Приветствую!</h1>
+    <p>Для того, чтобы начать работу с нашими инструментами, <span><a href="{% url 'login'%}?next={% url 'home:home'%}">авторизируйтесь</a></span> на сайте</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content container d-flex justify-content-center flex-column align-items-center">
+    <h1>Авторизируйтесь на сайте</h1>
+    <form class="login" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <p style="font-size: 15px;">Если ви ещё не зарегистрированы, пройдите по
+            <span><a href="{% url 'signup' %}">ссылке</a></span>
+        </p>
+    <input class="submit-but center-but" type="submit"  value="Підтвердити" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+</div>
+{% endblock %}

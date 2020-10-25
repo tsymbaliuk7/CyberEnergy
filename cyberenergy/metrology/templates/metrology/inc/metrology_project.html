@@ -1,0 +1,14 @@
+{% load static %}
+    <div class="metrology-item metrology-project d-flex">
+        <div style="background-color: white; height: 100%; width: 4px; border-radius: 2px; margin-right: 15px"></div>
+        <div class="d-flex flex-column justify-content-between" style="width: 100%">
+            <div>
+                <a href="{% url 'metrology:project' project_elem.id %}">{{project_elem.name}}</a>
+                <p style="font-size: 10px; opacity: 80%">{{ project_elem.created_at }}</p>
+            </div>
+            <div style="margin-left: auto; margin-right: 0">
+                <a href="{% url 'metrology:update' project_elem.id %}"><img style="width: 35px" src="{% static 'home/img/update.svg' %}"></a>
+                <a href="{% url 'metrology:delete' project_elem.id %}"><img style="width: 35px" src="{% static 'home/img/delete.svg' %}"></a>
+            </div>
+        </div>
+    </div>

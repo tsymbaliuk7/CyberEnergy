@@ -1,0 +1,143 @@
+body{
+    width: 100%;
+    font-family: "Segoe UI", sans-serif;
+    color: #2f2f2f;
+    background-color: white !important;
+    min-height:100vh;
+
+}
+
+a{
+    color: #007EA7;
+}
+
+a:default{
+    color: #2f2f2f;
+}
+
+a:active{
+    color: #2f2f2f;
+}
+
+a:hover{
+    color: #2f2f2f;
+
+}
+
+h1{
+    font-weight: bolder;
+    margin: 30px 0;
+}
+
+.content{
+    margin-top: 60px;
+    margin-bottom: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    min-height:80vh;
+}
+
+
+.login{
+    padding: 30px;
+    width: 75%;
+    border: 9px #007EA7 solid;
+    border-radius: 30px;
+}
+
+.login li{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.login p{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.errorlist{
+    list-style-type: none;
+    padding: 10px;
+    border: 4px red solid;
+    background-color: #FC7A57;
+    border-radius: 15px;
+}
+
+.center-but{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%,0);
+}
+
+.submit-but{
+    background-color: #007EA7;
+    border: none;
+    border-radius: 40px;
+    width: 300px;
+    height: 70px;
+    color: white;
+    margin: 30px 5px 0px;
+}
+
+.footer{
+    color: white;
+    background-color: #007EA7;
+}
+
+.footer a{
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:active{
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover{
+    color: white;
+
+}
+
+.instrument-item{
+    margin-top: 20px;
+    border-radius: 30px;
+    height: 300px;
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+
+}
+
+.col-md-6 a:hover{
+    text-decoration: none;
+}
+
+.metrology-item{
+    background-color: #00A7E1;
+    color: white !important;
+}
+
+.metrology-item a{
+    color: white;
+}
+
+.metrology-project{
+    height: 250px;
+    border-radius: 30px;
+    padding: 30px;
+    font-size: 35px;
+    margin-bottom: 40px;
+}
+
+.chart{
+    margin-bottom: 200px;
+}
+
+.metrology-title{
+     border-radius: 30px;
+     padding: 30px;
+    margin-bottom: 100px;
+}

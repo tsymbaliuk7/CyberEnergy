@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container content d-flex justify-content-center flex-column align-items-center">
+<h1>Введите нужную информацию</h1>
+  <form class="login" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+      <div class="d-flex justify-content-center">
+    <input class="submit-but" type="submit" value="Создать">
+    <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'metrology:all' %}';return false;">
+      </div>
+  </form>
+</div>
+{% endblock %}

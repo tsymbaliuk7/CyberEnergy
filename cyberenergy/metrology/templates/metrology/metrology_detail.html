@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="content container">
+        {% include 'metrology/inc/metrology_title.html' with project=metrology_list %}
+        <canvas class="chart" id="temperatureDateChart" style="background-color: white"></canvas>
+
+        <canvas class="chart" id="temperatureChart" style="background-color: white"></canvas>
+
+        <canvas class="chart" id="windChart" style="background-color: white"></canvas>
+
+        <figure  class="highcharts-figure">
+            <div id="windRose"></div>
+        </figure>
+
+        <canvas class="chart" id="solarDateChart" style="background-color: white; margin-top: 200px"></canvas>
+
+        <canvas class="chart" id="solarChart" style="background-color: white"></canvas>
+
+
+        <script>
+var temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ temperature_list }},
+        datasets: [{
+            label: 'Количество часов',
+            data: {{ temperature_hours }},
+            backgroundColor:
+                'rgba(255, 174, 0, 0.5)',
+            borderColor:
+                'rgba(255, 174, 0, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Диаграмма продолжительности температурных режимов',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Температура, ℃',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+
+var solarCtx = document.getElementById('solarChart').getContext('2d');
+var solarChart = new Chart(solarCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ solar_list }},
+        datasets: [{
+            label: 'Количество часов',
+            data: {{ solar_hours }},
+            backgroundColor:
+                'rgba(38, 121, 255, 0.5)',
+            borderColor:
+                'rgba(38, 121, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Диаграмма продолжительности режимов солнечной активности, Нью-Йорк',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Интенсивность солнечной инсоляции, Вт/м²',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+var solarDateCtx = document.getElementById('solarDateChart').getContext('2d');
+var solarDateChart = new Chart(solarDateCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ solar_date|safe }},
+        datasets: [{
+            label: 'Интенсивность солнечной инсоляции, Вт/м²',
+            data: {{ solar_for_date }},
+            backgroundColor:
+                'rgba(38, 121, 255, 0.5)',
+            borderColor:
+                'rgba(38, 121, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'График интенсивности солнечной инсоляции, Нью-Йорк',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Дата',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+
+var windCtx = document.getElementById('windChart').getContext('2d');
+var windChart = new Chart(windCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ wind_list }},
+        datasets: [{
+            label: 'Количество часов',
+            data: {{ wind_hours }},
+            backgroundColor:
+                'rgba(38, 121, 255, 0.5)',
+            borderColor:
+                'rgba(38, 121, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Диаграмма продолжительности режимов ветровой активности',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Скорость ветра, м/c',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+var categories = ['Северный', 'С-В', 'Восточный', 'Ю-В', 'Южный', 'Ю-З', 'Западный', 'С-З'];
+Highcharts.chart('windRose', {
+
+        chart: {
+            polar: true,
+            type: 'column'
+        },
+
+        title: {
+            text: 'Роза ветров, {{ metrology_list.region }}'
+        },
+
+        pane: {
+            size: '85%'
+        },
+
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            y: 100,
+            layout: 'vertical',
+            reversed: true
+        },
+
+        xAxis: {
+            min: 0,
+            max: 8,
+            type: '',
+            tickmarkPlacement: 'on',
+            tickInterval: 1,
+            labels: {
+                formatter: function () {
+                    return categories[this.value]; // return text for label
+                }
+            }
+        },
+
+        yAxis: {
+            min: 0,
+            labels: {
+                formatter: function () {
+                    return this.value + '%';
+                }
+            },
+            reversedStacks: false
+        },
+
+        tooltip: {
+            valueSuffix: '%'
+        },
+        series:
+            [
+                {
+                    "data": [],
+				    "type": "column",
+				    "name": '{{ calm_percent|safe }}'
+
+                },{% for name, data in wind_rose_data.items %}
+            {
+				"data": {{ data|safe}},
+				"type": "column",
+				"name": '{{ name|safe }}'
+			}, {% endfor %}
+				],
+
+    plotOptions: {
+        series: {
+            stacking: 'normal',
+            shadow: false,
+            groupPadding: 0,
+            pointPlacement: 'on'
+        }
+    }
+});
+
+
+
+var temperatureDateCtx = document.getElementById('temperatureDateChart').getContext('2d');
+var temperatureDateChart = new Chart(temperatureDateCtx, {
+    type: 'line',
+    data: {
+        labels: {{ date_list|safe }},
+        datasets: [{
+            label: 'Температура, ℃',
+            data: {{ temperature_for_date }},
+            backgroundColor:
+                'rgba(38, 121, 255, 0.5)',
+            borderColor:
+                'rgba(38, 121, 255, 1)',
+            borderWidth: 1,
+            pointRadius: 0,
+            lineTension: 0
+
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+        hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+        title: {
+            display: true,
+            text: 'Диаграмма температурных условий',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Дата',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+
+
+</script>
+</div>
+{% endblock %}
