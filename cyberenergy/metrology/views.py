@@ -36,9 +36,11 @@ class MetrologyDetailView(LoginRequiredMixin, View):
 
         solar_date = []
         solar_for_date = []
+        temp = list(range(8, 18))
         for elem in sd:
-            solar_date.append(elem.date.strftime('%d.%m %H:%M'))
-            solar_for_date.append(int(elem.value))
+            if elem.date.hour in temp:
+                solar_date.append(elem.date.strftime('%d.%m %H:%M'))
+                solar_for_date.append(int(elem.value))
 
         solar_list = list(set([int(data.value) for data in sd]))
         solar_list.sort()
@@ -69,11 +71,12 @@ class MetrologyDetailView(LoginRequiredMixin, View):
         wind_speed = ['{} ({} %)'.format(wind_speed[i], round(wind_speed_count[i].count()/without_calm.count()*100), 1) for i in range(len(wind_speed))]
         wind_rose_data = dict(zip(wind_speed, wind_speed_data))
         calm_percent = '{} ({} %)'.format('Штиль', round((md.filter(wind_speed=0).count() / md.count()) * 100, 1))
+        change_percent = '{} ({} %)'.format('Переменный', round((md.filter(wind_direction=WindDirection.objects.get(name="Переменный")).count() / md.count()) * 100, 1))
 
         context = {'metrology_list': m, 'temperature_list': temperature_list, 'temperature_hours': temperature_hours, 'wind_list': wind_list,
                    'wind_hours': wind_hours, 'date_list': date_list, 'temperature_for_date': temperature_for_date, 'calm_percent': calm_percent,
                    'wind_rose_data': wind_rose_data, 'solar_list': solar_list, 'solar_hours': solar_hours, 'solar_date': solar_date,
-                   'solar_for_date': solar_for_date}
+                   'solar_for_date': solar_for_date, 'change_percent': change_percent}
         return render(request, template_name=self.template_name, context=context)
 
 

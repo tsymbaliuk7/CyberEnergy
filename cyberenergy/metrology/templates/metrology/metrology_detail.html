@@ -80,7 +80,7 @@ var solarChart = new Chart(solarCtx, {
         },
         title: {
             display: true,
-            text: 'Диаграмма продолжительности режимов солнечной активности, Нью-Йорк',
+            text: 'Диаграмма продолжительности режимов солнечной активности',
             fontSize: 20
         },
         scales: {
@@ -117,7 +117,7 @@ var solarDateChart = new Chart(solarDateCtx, {
         },
         title: {
             display: true,
-            text: 'График интенсивности солнечной инсоляции, Нью-Йорк',
+            text: 'График интенсивности солнечной инсоляции',
             fontSize: 20
         },
         scales: {
@@ -223,6 +223,11 @@ Highcharts.chart('windRose', {
         series:
             [
                 {
+                    "data": [],
+				    "type": "column",
+				    "name": '{{ change_percent|safe }}'
+
+                },{
                     "data": [],
 				    "type": "column",
 				    "name": '{{ calm_percent|safe }}'
