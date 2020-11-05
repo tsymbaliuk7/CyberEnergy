@@ -1,24 +1,18 @@
-from django.urls import reverse_lazy
-from .owner import OwnerListView, OwnerDeleteView, OwnerUpdateView
-from .forms import MetrologyForm
 from django.views import View
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Metrology, MetrologyData, WindDirection, SolarData
+from .models import MetrologyData, WindDirection, SolarData
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import FormView
 from .exel_reader import exel_reader
 from django.db.models import Q
-
-
-class MetrologyListView(OwnerListView):
-    model = Metrology
+from django.apps import apps
 
 
 class MetrologyDetailView(LoginRequiredMixin, View):
     template_name = 'metrology/metrology_detail.html'
 
     def get(self, request, pk):
-        m = get_object_or_404(Metrology, pk=pk, owner=self.request.user)
+        Project = apps.get_model('projects', 'Project')
+        m = get_object_or_404(Project, pk=pk, owner=self.request.user)
         if MetrologyData.objects.filter(metrology=m).count() == 0 or m.is_changed:
             MetrologyData.objects.filter(metrology=m).delete()
             exel_reader(m)
@@ -87,43 +81,3 @@ class MetrologyDetailView(LoginRequiredMixin, View):
                    'solar_date': solar_date,
                    'solar_for_date': solar_for_date, 'change_percent': change_percent}
         return render(request, template_name=self.template_name, context=context)
-
-
-class MetrologyCreateView(LoginRequiredMixin, FormView):
-    template_name = 'metrology/metrology_form.html'
-    form_class = MetrologyForm
-    success_url = reverse_lazy('metrology:all')
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        form.instance.save()
-        return super(MetrologyCreateView, self).form_valid(form)
-
-
-class MetrologyUpdateView(View):
-    model = Metrology
-    template = 'metrology/metrology_form.html'
-    success_url = reverse_lazy('metrology:all')
-
-    def get(self, request, pk):
-        mtr = get_object_or_404(Metrology, id=pk, owner=self.request.user)
-        form = MetrologyForm(instance=mtr)
-        ctx = {'form': form}
-        return render(request, template_name=self.template, context=ctx)
-
-    def post(self, request, pk=None):
-        mtr = get_object_or_404(Metrology, id=pk, owner=self.request.user)
-        form = MetrologyForm(request.POST, instance=mtr)
-        if not form.is_valid():
-            ctx = {'form': form}
-            return render(request, self.template, ctx)
-        mtr = form.save(commit=False)
-        mtr.set_is_changed(True)
-        mtr.save()
-        return redirect(self.success_url)
-
-
-
-class MetrologyDeleteView(OwnerDeleteView):
-    success_url = reverse_lazy('metrology:all')
-    model = Metrology

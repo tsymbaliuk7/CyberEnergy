@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <div class="container content">
+    <h1>Ваши проекты</h1>
+    <p style="margin-bottom: 50px">Создайте <span><a href="{% url 'projects:create'%}">новый</a></span> проект</p>
+    {% if project_list %}
+        <div class="row">
+        {% for elem in project_list%}
+            <div class="col-md-4">
+            {% include 'projects/inc/project_item.html' with project_elem=elem %}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+
+    {% endif %}
+    </div>
+{% endblock %}

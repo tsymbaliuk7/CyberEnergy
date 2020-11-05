@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <div class="content container">
+    {% include 'projects/inc/project_title.html' with project=project_detail %}
+        <div class="row">
+            <div class="col-md-6">
+                <a href="{% url 'projects:metrology:project' project_detail.id %}">
+                    <div class="instrument-item metrology-item d-flex">
+                        <div style="background-color: white; height: 100%; width: 5px; border-radius: 2px; margin-right: 15px">
+                        </div>
+                        <div class="d-flex flex-column justify-content-between">
+                            <p>Анализ метрологических данных региона</p>
+                            <div style="margin-left: auto; margin-right: 0"><img style="height: 100px" src="{% static 'home/img/storm.svg' %}"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="#">
+                    <div style="background-color: #003459" class="instrument-item  d-flex">
+                        <div style="background-color: white; height: 100%; width: 4px; border-radius: 2px; margin-right: 15px">
+                        </div>
+                        <div class="d-flex flex-column justify-content-between">
+                            <p>Моделирования теплотехнических характеристик здания</p>
+                            <div style="margin-left: auto; margin-right: 0"><img style="height: 100px" src="{% static 'home/img/house.svg' %}"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
     'metrology.apps.MetrologyConfig',
+    'projects.apps.ProjectsConfig',
 ]
 
 MIDDLEWARE = [

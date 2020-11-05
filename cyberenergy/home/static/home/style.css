@@ -120,11 +120,17 @@ h1{
     color: white !important;
 }
 
-.metrology-item a{
+.project-item{
+    background-color: #007EA7;
+    color: white !important;
+}
+
+
+.row a{
     color: white;
 }
 
-.metrology-item a:hover{
+.row a:hover{
     color: white;
 
 }
@@ -142,7 +148,8 @@ h1{
 }
 
 .metrology-title{
-     border-radius: 30px;
-     padding: 30px;
-    margin-bottom: 100px;
+    border-radius: 30px;
+    padding: 30px;
+    margin-bottom: 40px;
+    border: #007EA7 7px solid;
 }
