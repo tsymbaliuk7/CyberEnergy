@@ -16,7 +16,7 @@ a:default{
 }
 
 a:active{
-    color: #2f2f2f;
+    color: #2f2f2f ;
 }
 
 a:hover{
@@ -122,6 +122,11 @@ h1{
 
 .metrology-item a{
     color: white;
+}
+
+.metrology-item a:hover{
+    color: white;
+
 }
 
 .metrology-project{

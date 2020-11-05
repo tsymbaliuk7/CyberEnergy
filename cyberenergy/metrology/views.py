@@ -2,13 +2,12 @@ from django.urls import reverse_lazy
 from .owner import OwnerListView, OwnerDeleteView, OwnerUpdateView
 from .forms import MetrologyForm
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Metrology, MetrologyData, WindDirection, SolarData
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 from .exel_reader import exel_reader
 from django.db.models import Q
-
 
 
 class MetrologyListView(OwnerListView):
@@ -64,18 +63,28 @@ class MetrologyDetailView(LoginRequiredMixin, View):
         wind_speed = ['1-2 м/c', '2-5 м/c', '5-7 м/c', '7-9 м/c', '>9 м/c']
         without_calm = md.filter(wind_speed__gt=0)
         without_calm = without_calm.filter(~Q(wind_direction=WindDirection.objects.get(name="Переменный")))
-        wind_speed_count = [without_calm.filter(wind_speed__gte=1, wind_speed__lt=2), without_calm.filter(wind_speed__gte=2, wind_speed__lt=5),
-                            without_calm.filter(wind_speed__gte=5, wind_speed__lt=7), without_calm.filter(wind_speed__gte=7, wind_speed__lt=9),
+        wind_speed_count = [without_calm.filter(wind_speed__gte=1, wind_speed__lt=2),
+                            without_calm.filter(wind_speed__gte=2, wind_speed__lt=5),
+                            without_calm.filter(wind_speed__gte=5, wind_speed__lt=7),
+                            without_calm.filter(wind_speed__gte=7, wind_speed__lt=9),
                             without_calm.filter(wind_speed__gte=9)]
-        wind_speed_data = [[[dir_name, round(i.filter(wind_direction=WindDirection.objects.get(name=dir_name)).count()/without_calm.count()*100, 1)] for dir_name in wind_dir] for i in wind_speed_count]
-        wind_speed = ['{} ({} %)'.format(wind_speed[i], round(wind_speed_count[i].count()/without_calm.count()*100), 1) for i in range(len(wind_speed))]
+        wind_speed_data = [[[dir_name, round(
+            i.filter(wind_direction=WindDirection.objects.get(name=dir_name)).count() / without_calm.count() * 100, 1)]
+                            for dir_name in wind_dir] for i in wind_speed_count]
+        wind_speed = [
+            '{} ({} %)'.format(wind_speed[i], round(wind_speed_count[i].count() / without_calm.count() * 100), 1) for i
+            in range(len(wind_speed))]
         wind_rose_data = dict(zip(wind_speed, wind_speed_data))
         calm_percent = '{} ({} %)'.format('Штиль', round((md.filter(wind_speed=0).count() / md.count()) * 100, 1))
-        change_percent = '{} ({} %)'.format('Переменный', round((md.filter(wind_direction=WindDirection.objects.get(name="Переменный")).count() / md.count()) * 100, 1))
+        change_percent = '{} ({} %)'.format('Переменный', round(
+            (md.filter(wind_direction=WindDirection.objects.get(name="Переменный")).count() / md.count()) * 100, 1))
 
-        context = {'metrology_list': m, 'temperature_list': temperature_list, 'temperature_hours': temperature_hours, 'wind_list': wind_list,
-                   'wind_hours': wind_hours, 'date_list': date_list, 'temperature_for_date': temperature_for_date, 'calm_percent': calm_percent,
-                   'wind_rose_data': wind_rose_data, 'solar_list': solar_list, 'solar_hours': solar_hours, 'solar_date': solar_date,
+        context = {'metrology_list': m, 'temperature_list': temperature_list, 'temperature_hours': temperature_hours,
+                   'wind_list': wind_list,
+                   'wind_hours': wind_hours, 'date_list': date_list, 'temperature_for_date': temperature_for_date,
+                   'calm_percent': calm_percent,
+                   'wind_rose_data': wind_rose_data, 'solar_list': solar_list, 'solar_hours': solar_hours,
+                   'solar_date': solar_date,
                    'solar_for_date': solar_for_date, 'change_percent': change_percent}
         return render(request, template_name=self.template_name, context=context)
 
@@ -91,11 +100,28 @@ class MetrologyCreateView(LoginRequiredMixin, FormView):
         return super(MetrologyCreateView, self).form_valid(form)
 
 
-class MetrologyUpdateView(OwnerUpdateView):
+class MetrologyUpdateView(View):
     model = Metrology
-    fields = ['name', 'begin_date', 'end_date', 'region']
-
+    template = 'metrology/metrology_form.html'
     success_url = reverse_lazy('metrology:all')
+
+    def get(self, request, pk):
+        mtr = get_object_or_404(Metrology, id=pk, owner=self.request.user)
+        form = MetrologyForm(instance=mtr)
+        ctx = {'form': form}
+        return render(request, template_name=self.template, context=ctx)
+
+    def post(self, request, pk=None):
+        mtr = get_object_or_404(Metrology, id=pk, owner=self.request.user)
+        form = MetrologyForm(request.POST, instance=mtr)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)
+        mtr = form.save(commit=False)
+        mtr.set_is_changed(True)
+        mtr.save()
+        return redirect(self.success_url)
+
 
 
 class MetrologyDeleteView(OwnerDeleteView):

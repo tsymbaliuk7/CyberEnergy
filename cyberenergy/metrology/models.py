@@ -16,7 +16,7 @@ class Region(models.Model):
 
 
 class Metrology(models.Model):
-    name = models.CharField('Название', max_length=200,
+    name = models.CharField('Название', max_length=200, unique=True,
                             validators=[MinLengthValidator(2, "Название проекта дожно состоять хотя бы с 2 символов")])
     begin_date = models.DateField('Дата начала', default=datetime.date(2012, 1, 1))
     end_date = models.DateField('Дата конца', default=datetime.date(2012, 12, 31))

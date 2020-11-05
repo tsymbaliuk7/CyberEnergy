@@ -1,15 +1,22 @@
 from django import forms
+from django.contrib.admin.widgets import AdminDateWidget
 from django.forms.widgets import SelectDateWidget, DateInput
 from calendar import monthrange
+from bootstrap_datepicker_plus import DatePickerInput
 from .models import Metrology
 from datetime import date
 
 
 class MetrologyForm(forms.ModelForm):
+
     class Meta:
         model = Metrology
         fields = ['name', 'begin_date', 'end_date', 'region']
         labels = {'name': 'Название проекта', 'begin_date': 'Дата начала', 'end_date': 'Дата конца', 'region': 'Регион'}
+        widgets = {
+            'begin_date': DatePickerInput(format='%d.%m.%Y').start_of('event days'),
+            'end_date': DatePickerInput(format='%d.%m.%Y').end_of('event days'),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
