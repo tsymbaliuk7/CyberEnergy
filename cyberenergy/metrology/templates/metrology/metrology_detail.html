@@ -4,6 +4,7 @@
 
     <div class="content container">
         {% include 'projects/inc/project_title.html' with project=metrology_list %}
+        {% include 'projects/inc/project_apps.html' with project=metrology_list %}
         <canvas class="chart" id="temperatureDateChart" style="background-color: white"></canvas>
 
         <canvas class="chart" id="temperatureChart" style="background-color: white"></canvas>

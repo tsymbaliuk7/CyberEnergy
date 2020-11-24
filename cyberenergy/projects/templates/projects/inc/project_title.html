@@ -1,9 +1,15 @@
-<div class="metrology-title d-flex">
+{% load static %}
+<div class="metrology-title">
     <div style="background-color: white; height: 100%; width: 4px; border-radius: 2px; margin-right: 15px"></div>
-    <div>
-        <p>Название проекта: <span style="font-size: 30px; font-weight: bolder">{{ project.name }}</span></p>
-        <p>Регион: <span style="font-size: 30px; font-weight: bolder">{{ project.region }}</span></p>
-        <p>Дата начала: <span style="font-size: 30px; font-weight: bolder">{{ project.begin_date }}</span></p>
-        <p>Дата конца: <span style="font-size: 30px; font-weight: bolder"> {{ project.end_date }} </span></p>
+    <div class="d-flex justify-content-between">
+        <div>
+            <p>Название проекта: <span style="font-size: 30px; font-weight: bolder">{{ project.name }}</span></p>
+            <p>Регион: <span style="font-size: 30px; font-weight: bolder">{{ project.region }}</span></p>
+            <p>Дата начала: <span style="font-size: 30px; font-weight: bolder">{{ project.begin_date }}</span></p>
+            <p>Дата конца: <span style="font-size: 30px; font-weight: bolder"> {{ project.end_date }} </span></p>
+        </div>
+        <div class="d-flex flex-column justify-content-end">
+            <a href="{% url 'projects:update' project.id %}"><img style="width: 35px" src="{% static 'home/img/blue_update.svg' %}"></a>
+        </div>
     </div>
 </div>

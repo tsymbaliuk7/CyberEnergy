@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <script>
+     function hideA(x) {
+   if (x.checked) {
+     document.getElementById("heating_duration").style.display = "none";
+     document.getElementById("id_heating_duration").removeAttribute("required");
+     document.getElementById("heater_power").style.display = "block";
+     document.getElementById("id_heater_power").setAttribute("required", "");
+   }
+ }
+
+ function hideB(x) {
+   if (x.checked) {
+     document.getElementById("heater_power").style.display = "none";
+     document.getElementById("id_heater_power").removeAttribute("required");
+     document.getElementById("heating_duration").style.display = "block";
+     document.getElementById("id_heating_duration").setAttribute("required", "");
+   }
+ }
+    </script>
+<div class="container content d-flex justify-content-center flex-column align-items-center">
+<h1>Введите нужную информацию</h1>
+  <form class="login" action="" method="post">
+      {% csrf_token %}
+      {{ form.media}}
+      <div class="container">
+          {{ form.errors.text }}
+          <div class="row">
+              <div class="col-md-12">
+                  <p>{{ form.area.label }}:</p>
+                  <p>{{ form.area }}</p>
+              </div>
+              <div class="col-md-12">
+                  <p>{{ form.heat_loss.label }}:</p>
+                  <p>{{ form.heat_loss }}</p>
+              </div>
+              <div class="col-md-12">
+                  <p>{{ form.residents.label }}:</p>
+                  <p>{{ form.residents }}</p>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.water_start_temperature.label }}:</p>
+                  <p>{{ form.water_start_temperature }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.water_end_temperature.label }}:</p>
+                  <p>{{ form.water_end_temperature }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.water_shower_temperature.label }}:</p>
+                  <p>{{ form.water_shower_temperature }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.shower_number.label }}:</p>
+                  <p>{{ form.shower_number }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.water_bath_temperature.label }}:</p>
+                  <p>{{ form.water_bath_temperature }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.bath_number.label }}:</p>
+                  <p>{{ form.bath_number }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.q_shower_normal.label }}:</p>
+                  <p>{{ form.q_shower_normal }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.q_bath_normal.label }}:</p>
+                  <p>{{ form.q_bath_normal }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div>
+                      <input type="radio" id="duration" onchange="hideB(this)" value="duration" checked name="heating">
+                      <label for="duration">Ввести время нагрева</label>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div>
+                      <input type="radio" id="power" onchange="hideA(this)" value="power" name="heating">
+                      <label for="power">Ввести мощность нагревателя</label>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div id="heating_duration">
+                      <p>{{ form.heating_duration.label }}:</p>
+                      <p>{{ form.heating_duration }}</p>
+                  </div>
+                  <div id="heater_power" style="display: none">
+                      <p>{{ form.heater_power.label }}:</p>
+                      <p>{{ form.heater_power }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.expected_air_temperature.label }}:</p>
+                  <p>{{ form.expected_air_temperature }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12" style="text-align: center; margin-top: 40px; margin-bottom: 30px">
+                    <h3>Цена на топливо для котлов</h3>
+              </div>
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.energy_price.label }}:</p>
+                  <p>{{ form.energy_price }}</p>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.gaz_price.label }}:</p>
+                  <p>{{ form.gaz_price }}</p>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.coal_price.label }}:</p>
+                  <p>{{ form.coal_price }}</p>
+                  </div>
+              </div>
+
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.wood_price.label }}:</p>
+                  <p>{{ form.wood_price }}</p>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.pellets_price.label }}:</p>
+                  <p>{{ form.pellets_price }}</p>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                  <p>{{ form.electrical_price.label }}:</p>
+                  <p>{{ form.electrical_price }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="d-flex justify-content-center">
+          <input class="submit-but" type="submit" value="Сохранить">
+          <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'projects:project' project_item.pk %}';return false;">
+      </div>
+  </form>
+</div>
+{% endblock %}

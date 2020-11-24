@@ -37,8 +37,10 @@ INSTALLED_APPS = [
 
     "bootstrap4",
     'bootstrap_datepicker_plus',
+    'wkhtmltopdf',
 
     'home.apps.HomeConfig',
+    'house.apps.HouseConfig',
     'accounts.apps.AccountsConfig',
     'metrology.apps.MetrologyConfig',
     'projects.apps.ProjectsConfig',
@@ -120,4 +122,8 @@ STATIC_URL = '/static/'
 
 BOOTSTRAP4 = {
     'include_jquery': True,
+}
+
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
 }

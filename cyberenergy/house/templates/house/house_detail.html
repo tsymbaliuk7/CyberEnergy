@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    {% load static %}
+    <div class="container content">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        {% include 'projects/inc/project_title.html' with project=project_item %}
+        {% include 'projects/inc/project_apps.html' with project=project_item %}
+        {% if house %}
+            <h1 style="margin-top: 100px"><span>Обновить данные для </span><a href="{% url 'projects:house:update' project_item.id %}">дома
+                <img style="height: 33px" src="{% static 'home/img/refresh.svg'%}"></a></h1>
+            <h1 style="margin-top: 100px">Результаты вычислений</h1>
+            <div class="metrology-title" style="margin-top: 50px; margin-bottom: 100px;">
+                <p>Объемы потребления воды на 1 прием душа:<span style="font-weight: bolder;"> {{ house_item.q_shower_normal }} л </span></p>
+                <p>Объемы потребления воды на 1 прием ванны:<span style="font-weight: bolder;"> {{ house_item.q_bath_normal }} л </span></p>
+                <p>Объемы потребления воды на приемы душа:<span style="font-weight: bolder;"> {{ house_item.q_shower }} л/сутки </span></p>
+                <p>Объемы потребления воды на приемы ванны:<span style="font-weight: bolder;"> {{ house_item.q_bath }} л/сутки </span></p>
+                <p>Скоректированый расхода горячей воды для температуры на выходе (душ):<span style="font-weight: bolder;"> {{ house_item.shower_water_volume }} л/сутки </span></p>
+                <p>Скоректированый расхода горячей воды для температуры на выходе (ванная):<span style="font-weight: bolder;"> {{ house_item.bath_water_volume }} л/сутки </span></p>
+                <p>Скоректированый расхода горячей воды для температуры на выходе (вместе):<span style="font-weight: bolder;"> {{ house_item.total_water_volume }} м³/сутки </span></p>
+                <p>Энергия необходима для нагрева воды:<span style="font-weight: bolder;"> {{ house_item.energy }} кВт•ч </span></p>
+                <p>Продолжительность нагрева емкости:<span style="font-weight: bolder;"> {{ house_item.heating_duration }} ч. </span></p>
+                <p>Мощность нагревателя: <span style="font-weight: bolder;">{{ house_item.heater_power }}</span> кВт</p>
+            </div>
+            <div class="chart">
+                <canvas id="temperatureChart" style="background-color: white"></canvas>
+                <p>\[\ Q(T_{зовн.}) = {{ k }}T_{зовн.} + {{ b }} \]</p>
+            </div>
+            <div style="margin-top: 50px; margin-bottom: 100px">
+                <p>Расходы энергии на отопление за период от {{ project_item.begin_date }} до {{ project_item.end_date }}:</p>
+                <p class="mathjax-left">\[\ W_{теп.} = {{ energy_loss }} кВт \cdot ч \]</p>
+            </div>
+            <div class="chart">
+                <canvas id="boilerChart" style="background-color: white"></canvas>
+            </div>
+        {% else %}
+            Ого) Как вы сюда попали?
+            <a href="{% url 'projects:house:create' project_item.id %}">Введите информацию</a>
+        {% endif %}
+    </div>
+    <script>
+        var temperatureCtx = document.getElementById('boilerChart').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ boiler_name|safe }},
+        datasets: [{
+            label: 'Эксплуатационные расходы на отопление, грн',
+            data: {{ boiler_price }},
+            backgroundColor:
+                'rgba(255, 174, 0, 0.5)',
+            borderColor:
+                'rgba(255, 174, 0, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Гистограмма эксплуатационных затрат на отопление',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Котлы',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+
+
+
+
+        var temperatureDateCtx = document.getElementById('temperatureChart').getContext('2d');
+        var temperatureDateChart = new Chart(temperatureDateCtx, {
+            type: 'line',
+            data: {
+                labels: {{ temperature_range }},
+                datasets: [{
+                    label: 'Мощность теплопотерь здания, кВт',
+                    data: {{ q_range }},
+                    borderColor:
+                        'rgba(38, 121, 255, 1)',
+                    borderWidth: 1,
+                    pointRadius: 3,
+                    lineTension: 0
+
+                }],
+
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                title: {
+                    display: true,
+                    text: 'Зависимость теплопотерь здания от температурных условий',
+                    fontSize: 20
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                        display: true,
+                        labelString: 'Температура, ℃',
+                        fontSize: 15
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+{% endblock %}

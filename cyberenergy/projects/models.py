@@ -10,6 +10,7 @@ class Region(models.Model):
     name = models.CharField(max_length=200,
                             validators=[MinLengthValidator(2, "Region must be greater than 1 character")], unique=True
                             )
+    temperature = models.IntegerField(default=-20)
 
     def __str__(self):
         return self.name
