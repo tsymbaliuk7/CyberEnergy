@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'home.apps.HomeConfig',
     'house.apps.HouseConfig',
+    'electricity.apps.ElectricityConfig',
     'accounts.apps.AccountsConfig',
     'metrology.apps.MetrologyConfig',
     'projects.apps.ProjectsConfig',

@@ -29,6 +29,18 @@
                     </div>
                 </a>
             </div>
+            <div class="col-md-6">
+                <a href="{% url 'projects:electricity:detail' project_detail.id %}">
+                    <div style="background-color: #5b72f5" class="instrument-item  d-flex">
+                        <div style="background-color: white; height: 100%; width: 4px; border-radius: 2px; margin-right: 15px">
+                        </div>
+                        <div class="d-flex flex-column justify-content-between">
+                            <p>Моделирования теплотехнических характеристик здания</p>
+                            <div style="margin-left: auto; margin-right: 0"><img style="height: 100px" src="{% static 'home/img/electric.svg' %}"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}
