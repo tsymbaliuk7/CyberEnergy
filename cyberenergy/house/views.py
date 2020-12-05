@@ -1,4 +1,5 @@
 from io import BytesIO
+import urllib.request
 
 import pdfkit
 from django.apps import apps
@@ -62,10 +63,10 @@ class HouseDetailView(View):
         boiler_price = [heat_boiler, gaz_boiler, coal_boiler, wood_boiler, pellet_boiler, electr_boiler]
         boiler_price = [round(i, 2) for i in boiler_price]
         boiler_name = ['Тепловой', 'Газовый', 'Угольный', 'Древесный', 'Пеллетный', 'Электрический']
-        print(gaz_boiler)
+        price = list(map(lambda x: x*1.03, [8034, 8501, 5560, 6200, 6350, 5000]))
         ctx = {'project_item': p, 'house': house, 'house_item': house_item, 'temperature_range': temperature_range,
                'q_range': q_range, 'energy_loss': energy_loss, 'k': k, 'b': b, 'boiler_price': boiler_price,
-               'boiler_name': boiler_name}
+               'boiler_name': boiler_name, 'price': price}
         return render(request, template_name=self.template, context=ctx)
 
 
