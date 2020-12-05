@@ -39,6 +39,7 @@
             Ого) Как вы сюда попали?
             <a href="{% url 'projects:house:create' project_item.id %}">Введите информацию</a>
         {% endif %}
+    <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
     </div>
     <script>
         var temperatureCtx = document.getElementById('boilerChart').getContext('2d');

@@ -19,7 +19,8 @@
 
         <canvas class="chart" id="solarChart" style="background-color: white"></canvas>
 
-
+        <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
+    
         <script>
 var temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
 var temperatureChart = new Chart(temperatureCtx, {
