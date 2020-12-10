@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content container d-flex flex-column align-items-center">
+    <h1>Удалить пользователя</h1>
+    <p style="margin-bottom: 30px">Вы действительно хотите удалить прибор: {{ device }}?</p>
+    <form action="" method="POST">
+      {% csrf_token %}
+        <div class="d-flex justify-content-center">
+            <input class="submit-but" type="submit" value="Да, удалить.">
+            <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'projects:electricity:detail' pk=device.project.id %}';return false;">
+        </div>
+    </form>
+</div>
+{% endblock %}

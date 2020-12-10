@@ -1,0 +1,22 @@
+{% load static %}
+    <div style="background-color: #5b72f5; width: 100%; padding: 30px; border-radius: 40px; margin-bottom: 30px">
+
+        <div class="d-flex flex-column justify-content-between" style="width: 100%; height: 100%">
+            <div>
+                <p style="color: white; font-size: 25px">Название: <span style="font-weight: lighter">{{ device.name }}</span></p>
+            </div>
+            <div>
+                <p style="color: white; font-size: 25px">Мощность: <span style="font-weight: lighter">{{ device.power|floatformat }} Вт</span></p>
+            </div>
+            <div>
+                <p style="color: white; font-size: 25px">Включение: <span style="font-weight: lighter">{{ device.switch_on}}</span></p>
+            </div>
+            <div>
+                <p style="color: white; font-size: 25px">Выключение: <span style="font-weight: lighter">{{ device.switch_off}}</span></p>
+            </div>
+            <div style="margin-left: auto; margin-right: 0">
+                <a href="{% url 'projects:electricity:device_update' pk=device.project.id device_id=device.id %}"><img style="width: 35px" src="{% static 'home/img/update.svg' %}"></a>
+                <a href="{% url 'projects:electricity:device_delete' pk=device.project.id device_id=device.id %}"><img style="width: 35px" src="{% static 'home/img/delete.svg' %}"></a>
+            </div>
+        </div>
+    </div>

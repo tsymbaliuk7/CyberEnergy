@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container content d-flex justify-content-center flex-column align-items-center">
+<h1>Введите нужную информацию</h1>
+  <form class="login" action="" method="post">
+      {% csrf_token %}
+      {{ form.media}}
+
+      <div class="container">
+          <div class="row" style="width: 100%">
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+
+                      <p>{{ form.name.label }}:</p>
+                      <p>{{ form.name }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                      <p>{{ form.power.label }}:</p>
+                      <p>{{ form.power }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                      <p>{{ form.switch_on.label }}:</p>
+                      <p>{{ form.switch_on }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                      <p>{{ form.switch_off.label }}:</p>
+                      <p>{{ form.switch_off }}</p>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="d-flex flex-column justify-content-between" style="height: 100%">
+                      <p>{{ form.time_of_work.label }}:</p>
+                      <p>{{ form.time_of_work }}</p>
+                  </div>
+              </div>
+          </div>
+          {{ form.project_id }}
+          <div class="d-flex justify-content-center">
+                  <input class="submit-but" type="submit" value="Сохранить">
+                  <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'projects:electricity:detail' project_item.pk %}';return false;">
+          </div>
+      </div>
+  </form>
+</div>
+{% endblock %}

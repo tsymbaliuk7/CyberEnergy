@@ -2,8 +2,42 @@
 {% block content %}
     {% load static %}
     <div class="container content">
+        {% load static %}
         {% include 'projects/inc/project_title.html' with project=project_item %}
         {% include 'projects/inc/project_apps.html' with project=project_item %}
-        <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
+        <h1>Моделирование графика электрической нагрузки</h1>
+        {% if electricity_devices %}
+            <h3 style="margin-top: 50px">Сформируйте список электронных устройств, которыми пользуетесь.
+                По умолчанию вам доступен список некоторых устройств, вы можете изменять,
+                удалять или добавлять новые :</h3>
+        {% else %}
+            <h3 style="margin-top: 50px">Сформируйте список электронных устройств, которыми пользуетесь.
+                По умолчанию вам доступен список некоторых устройств, вы можете изменять,
+                удалять или добавлять новые :</h3>
+        {% endif %}
+        <div style="margin-top: 40px">
+            {% if electricity_devices %}
+                <div class="row" style="margin-bottom: 50px">
+                {% for device in electricity_devices %}
+                    <div class="col-md-6">
+                        {% include 'electricity/inc/device_item.html' with device=device %}
+                    </div>
+                {% endfor %}
+
+            {% endif %}
+            <div class="col-md-6">
+                <a href={% url 'projects:electricity:device_create' project_item.id %}>
+                    <div style="border: 4px #5b72f5 dashed; width: 100%; height: 300px; border-radius: 40px" >
+                        <div style="width: 100%; height: 100%" class="d-flex flex-column justify-content-center"><img style="height: 100px" src="{% static 'home/img/plus.svg' %}"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        </div>
+            {% if electricity_devices %}
+                <h3>Если вы закончили составлять список приборов, нажмите кнопку "Подтвердить"</h3>
+                <button onclick="window.location.href='{% url 'projects:electricity:user_devices' pk=project_item.id %}';return false;" style="text-align: center" class="submit-but center-but">Подтвердить</button>
+            {% endif %}
     </div>
+
 {% endblock %}
