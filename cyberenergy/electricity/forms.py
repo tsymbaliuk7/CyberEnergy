@@ -12,8 +12,8 @@ class DeviceForm(forms.ModelForm):
                   'power': 'Мощность, Вт',
                   'switch_on': 'Режим включения',
                   'switch_off': 'Режим выключения',
-                  'time_of_work': 'Среднее время работы, ч'}
-        widgets = {'time_of_work': forms.NumberInput(attrs={'required': True, 'step': '0.1', 'min': '0.1', 'max': '10'}),
+                  'time_of_work': 'Среднее время работы (необязательно), ч'}
+        widgets = {'time_of_work': forms.NumberInput(attrs={'required': False, 'step': '0.1', 'min': '0.1', 'max': '10'}),
                    'power': forms.NumberInput(attrs={'step': '0.5', 'min': '1', 'max': '100000'})}
 
 

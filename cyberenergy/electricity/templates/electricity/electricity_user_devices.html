@@ -26,9 +26,16 @@
                 {% for ud in user_devices %}
                 {% if ud.days == day%}
                     <div style="font-size: 17px; width: 100%; margin-bottom: 10px">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>{{ud.device}}</div>
-                                <div>{{ ud.start_time }} - {{ ud.end_time }}</div>
+                            <div class="row">
+                                <div class="col-4">{{ud.device}}</div>
+                                <div class="col-4" style="text-align: center">{{ ud.start_time }} - {{ ud.end_time }}</div>
+                                <div class="col-4">
+                                    <div class="d-flex justify-content-end">
+                                        <a style="color: #5b72f5" href="{% url 'projects:electricity:user_devices_update' pk=project.id device_id=ud.id%}">Update</a>
+                                        <span> | </span>
+                                        <a style="color: #5b72f5" href="{% url 'projects:electricity:user_devices_delete' pk=project.id device_id=ud.id%}">Delete</a>
+                                    </div>
+                                </div>
                             </div>
                             <div style="height: 2px; width: 100%; background-color: #5b72f5"></div>
                     </div>
