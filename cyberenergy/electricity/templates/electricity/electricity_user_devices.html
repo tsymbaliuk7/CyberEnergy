@@ -34,6 +34,8 @@
                                         <a style="color: #5b72f5" href="{% url 'projects:electricity:user_devices_update' pk=project.id device_id=ud.id%}">Update</a>
                                         <span> | </span>
                                         <a style="color: #5b72f5" href="{% url 'projects:electricity:user_devices_delete' pk=project.id device_id=ud.id%}">Delete</a>
+                                        <span> | </span>
+                                        <a style="color: #5b72f5" href="{% url 'projects:electricity:user_devices_clone' pk=project.id device_id=ud.id%}">Clone</a>
                                     </div>
                                 </div>
                             </div>
@@ -43,6 +45,7 @@
             {% endfor %}
             </div>
         {% endfor %}
+    <button onclick="window.location.href='{% url 'projects:electricity:statistics' pk=project.id %}';return false;" style="text-align: center" class="submit-but center-but">Подтвердить</button>
     </div>
 
 {% endblock %}

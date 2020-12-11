@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="container content">
+        {% load static %}
+        {% include 'projects/inc/project_title.html' with project=project %}
+        {% include 'projects/inc/project_apps.html' with project=project %}
+        {% for key, value in device_dict.items %}
+            <div class="chart">
+                <canvas id="Devices{{ key.id }}" style="background-color: white"></canvas>
+            </div>
+        {% endfor %}
+        <div class="chart">
+            <canvas id="allDevices" style="background-color: white"></canvas>
+        </div>
+        <div class="row" style="margin-bottom: 30px">
+            <div class="col-4">
+                  День
+            </div>
+            <div class="col-4" style="text-align: center">
+                  Объемы потребления, Вт*ч
+            </div>
+            <div class="col-4" style="text-align: center">
+                  Пиковая нагрузка, Вт
+            </div>
+        {% for key, value in device_max.items %}
+            <div class="col-4">
+                {{ key.name }}
+            </div>
+            {% for i in value %}
+                <div class="col-4" style="text-align: center; font-weight: lighter">
+                    {{ i|floatformat }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+
+
+        </div>
+        <p style="margin-top: 20px; margin-bottom: 20px">Суммарные объемы потребления: {{ total|floatformat }} Вт*ч</p>
+        <div class="chart">
+                <canvas id="day_sum" style="background-color: white"></canvas>
+        </div>
+        <div class="chart">
+                <canvas id="day_max" style="background-color: white"></canvas>
+        </div>
+
+        <div class="chart">
+                <canvas id="zone" style="background-color: white"></canvas>
+        </div>
+        <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
+    </div>
+
+    <script>
+    {% for key, value in device_dict.items %}
+        var temperatureCtx = document.getElementById('Devices{{ key.id }}').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ times|safe }},
+        datasets: [{
+            label: 'Мощность, Вт',
+            data: {{ value }},
+            backgroundColor:
+                'rgba(44, 156, 242, 0.5)',
+            borderColor:
+                'rgba(44, 156, 242)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'График электрической нагрузки ({{ key.name|safe }})',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Дата',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+    {% endfor %}
+
+        var temperatureCtx = document.getElementById('allDevices').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ times|safe }},
+        datasets: [{
+            label: 'Мощность, Вт',
+            data: {{ all_power }},
+            backgroundColor:
+                'rgba(44, 156, 242, 0.5)',
+            borderColor:
+                'rgba(44, 156, 242)',
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Суммарный недельный график электрической нагрузки',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Дата',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+
+
+        var temperatureCtx = document.getElementById('zone').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ zone_name|safe }},
+        datasets: [{
+            label: 'грн',
+            data: {{ zone_price }},
+            backgroundColor:
+                'rgba(44, 156, 242, 0.5)',
+            borderColor:
+                'rgba(44, 156, 242)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'График объемов расходов средств',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Тариф',
+                fontSize: 15
+                }
+            }],
+            yAxes: [{
+            display: true,
+            ticks: {
+                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                // OR //
+                beginAtZero: true   // minimum value will be 0.
+            }
+        }]
+        }
+    }
+});
+
+var temperatureCtx = document.getElementById('day_sum').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ days_list|safe }},
+        datasets: [{
+            label: 'Вт*ч',
+            data: {{ sum_days }},
+            backgroundColor:
+                'rgba(44, 156, 242, 0.5)',
+            borderColor:
+                'rgba(44, 156, 242)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Недельный график объемов потребления',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'День',
+                fontSize: 15
+                }
+            }],
+            yAxes: [{
+            display: true,
+            ticks: {
+                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                // OR //
+                beginAtZero: true   // minimum value will be 0.
+            }
+        }]
+        }
+    }
+});
+
+var temperatureCtx = document.getElementById('day_max').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ days_list|safe }},
+        datasets: [{
+            label: 'Мощность, Вт',
+            data: {{ max_val }},
+            backgroundColor:
+                'rgba(44, 156, 242, 0.5)',
+            borderColor:
+                'rgba(44, 156, 242)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Недельный график пиков мощности',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'День',
+                fontSize: 15
+                }
+            }],
+            yAxes: [{
+            display: true,
+            ticks: {
+                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                // OR //
+                beginAtZero: true   // minimum value will be 0.
+            }
+        }]
+        }
+    }
+});
+
+</script>
+{% endblock %}

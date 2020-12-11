@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -24,7 +22,7 @@ class ElectricityDevicesView(LoginRequiredMixin, View):
         p = get_object_or_404(Project, pk=pk, owner=self.request.user)
         electricity_devices = ElectricalDevices.objects.filter(project=pk)
         if not electricity_devices:
-            swt = get_object_or_404(SwitchType, name='авто')
+            swt = get_object_or_404(SwitchType, name='ручное')
             print(swt)
             for device in default_devices:
                 d = ElectricalDevices(name=device[0], power=device[1], switch_on=swt, switch_off=swt, project=p)
@@ -48,7 +46,7 @@ class ElectricityDeviceCreateView(LoginRequiredMixin, View):
     def post(self, request, pk=None):
         Project = apps.get_model('projects', 'Project')
         p = get_object_or_404(Project, pk=pk, owner=self.request.user)
-        form = DeviceForm()
+        form = DeviceForm(request.POST)
         if not form.is_valid():
             ctx = {'form': form, 'project_item': p}
             return render(request, self.template_name, ctx)
@@ -109,6 +107,7 @@ class ElectricityUserDevicesView(LoginRequiredMixin, View):
         user_devices = UserDevice.objects.filter(device__project=p)
         ctx = {'project': p, 'days': days, 'devices': devices, 'user_devices': user_devices}
         return render(request, self.template_name, ctx)
+
 
 class ElectricityUserDevicesAddView(LoginRequiredMixin, View):
     template_name = 'electricity/user_device_form.html'
@@ -175,8 +174,9 @@ class ElectricityUserDevicesAddView(LoginRequiredMixin, View):
             if device.time_of_work is None:
                 device.time_of_work = round(random.uniform(1.0, 5.0), 1)
             user_device.start_time = (datetime(hour=user_device.end_time.hour, minute=user_device.end_time.minute,
-                                             year=2020, month=3, day=18) - timedelta(hours=float(device.time_of_work)) +
-                                    timedelta(hours=round(random.uniform(-0.5, 0.5), 1))).time()
+                                               year=2020, month=3, day=18) - timedelta(
+                hours=float(device.time_of_work)) +
+                                      timedelta(hours=round(random.uniform(-0.5, 0.5), 1))).time()
         user_device.device = device
         user_device.save()
         return redirect(reverse('projects:electricity:user_devices', args=[pk]))
@@ -251,8 +251,9 @@ class ElectricityUserDevicesUpdateView(LoginRequiredMixin, View):
             if device.time_of_work is None:
                 device.time_of_work = round(random.uniform(1.0, 5.0), 1)
             user_device.start_time = (datetime(hour=user_device.end_time.hour, minute=user_device.end_time.minute,
-                                             year=2020, month=3, day=18) - timedelta(hours=float(device.time_of_work)) +
-                                    timedelta(hours=round(random.uniform(-0.5, 0.5), 1))).time()
+                                               year=2020, month=3, day=18) - timedelta(
+                hours=float(device.time_of_work)) +
+                                      timedelta(hours=round(random.uniform(-0.5, 0.5), 1))).time()
         user_device.save()
         return redirect(reverse('projects:electricity:user_devices', args=[pk]))
 
@@ -270,3 +271,115 @@ class ElectricityUserDevicesDeleteView(LoginRequiredMixin, View):
         p = get_object_or_404(Project, pk=pk, owner=self.request.user)
         UserDevice.objects.filter(id=device_id).delete()
         return redirect(reverse('projects:electricity:user_devices', args=[pk]))
+
+
+class ElectricityUserDevicesCloneView(LoginRequiredMixin, View):
+
+    def get(self, request, pk, device_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        user_device = get_object_or_404(UserDevice, id=device_id)
+        days = DayOfWeek.objects.all()
+        for day in days:
+            if not day == user_device.days:
+                ud = UserDevice(device=user_device.device, start_time=user_device.start_time, days=day,
+                                end_time=user_device.end_time)
+                ud.save()
+        return redirect(reverse('projects:electricity:user_devices', args=[pk]))
+
+
+class ElectricityStatisticView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        times = []
+        days = DayOfWeek.objects.all()
+        for day in days:
+            temp = []
+            cur_day = datetime(year=2020, month=12, day=10, hour=0, minute=0)
+            temp.append(cur_day.time())
+            for i in range(240):
+                cur_day += timedelta(minutes=10)
+                temp.append(cur_day.time())
+            times.append(temp)
+        devices = ElectricalDevices.objects.filter(project=p)
+        devices = [device for device in devices if UserDevice.objects.filter(device__project=p, device=device)]
+        device_dict = {}
+        for device in devices:
+            day_list = []
+            for i in range(len(times)):
+                temp = []
+                ud = UserDevice.objects.filter(device=device, days=days[i])
+                for period in times[i]:
+                    result = 0
+                    for obj in ud:
+                        if obj.start_time <= period <= obj.end_time:
+                            result += float(obj.device.power)
+                    temp.append(result)
+                day_list.append(temp)
+            day_list = [item for sublist in day_list for item in sublist]
+            device_dict[device] = day_list
+
+        # all user_devices
+        device_max = {}
+        day_list = []
+        days = DayOfWeek.objects.all()
+        for i in range(len(times)):
+            ud = UserDevice.objects.filter(device__project=p, days=days[i])
+            temp = []
+            for period in times[i]:
+                result = 0
+                for obj in ud:
+                    if obj.start_time <= period <= obj.end_time:
+                        result += float(obj.device.power)
+                temp.append(result)
+            day_list.append(temp)
+            device_max[days[i]] = temp
+
+        all_power = [item for sublist in day_list for item in sublist]
+        time_times = [item for sublist in times for item in sublist]
+        d = []
+        n = []
+        for i in range(len(time_times)):
+            if time(hour=23, minute=0) <= time_times[i] <= time(hour=23, minute=59) or time(hour=0, minute=0) <= \
+                    time_times[i] <= time(hour=7, minute=0):
+                n.append(all_power[i])
+            else:
+                d.append(all_power[i])
+        two_zone = round(((sum(n) / 6) / 1000) * 0.45 + ((sum(d) / 6) / 1000) * 0.9, 2)
+        d = []
+        pic = []
+        n = []
+        for i in range(len(time_times)):
+            if time(hour=23, minute=0) <= time_times[i] <= time(hour=23, minute=59) or time(hour=0, minute=0) <= \
+                    time_times[i] <= time(hour=7, minute=0):
+                n.append(all_power[i])
+            elif time(hour=8, minute=0) <= time_times[i] <= time(hour=11, minute=0) or time(hour=20, minute=0) <= \
+                    time_times[i] <= time(hour=22, minute=0):
+                pic.append(all_power[i])
+            else:
+                d.append(all_power[i])
+        three_zone = round(((sum(n) / 6) / 1000) * 0.36 + ((sum(d) / 6) / 1000) * 0.9 + ((sum(pic) / 6) / 1000) * 1.35,
+                           2)
+        times = [[j.strftime('%H:%M') + ' ' + days[i].name for j in times[i]] for i in range(len(times))]
+        times = [item for sublist in times for item in sublist]
+        all_power = [item for sublist in day_list for item in sublist]
+        for key, value in device_max.items():
+            device_max[key] = [sum(value) * (1 / 6), max(value)]
+        one_zone = []
+        days_list = []
+        max_val = []
+        for key, value in device_max.items():
+            one_zone.append(value[0])
+            days_list.append(key.name)
+            max_val.append(round(value[1], 1))
+        sum_days = one_zone
+        total = round(sum(one_zone))
+        one_zone = round((sum(one_zone) / 1000) * 0.9, 2)
+        zone_price = [(one_zone / 7) * 30, (two_zone / 7) * 30, (three_zone / 7) * 30]
+        zone_price = [round(i, 2) for i in zone_price]
+        zone_name = ['Однозонный', 'Двухзонный ', 'Трехзонный ']
+        context = {'project': p, 'times': times, 'all_power': all_power, 'device_dict': device_dict,
+                   'device_max': device_max, 'zone_price': zone_price, 'zone_name': zone_name, 'days_list': days_list,
+                   'sum_days': sum_days, 'max_val': max_val, 'total': total}
+        return render(request, 'electricity/electricity_statistic.html', context)

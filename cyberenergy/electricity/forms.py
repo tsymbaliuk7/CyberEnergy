@@ -13,7 +13,7 @@ class DeviceForm(forms.ModelForm):
                   'switch_on': 'Режим включения',
                   'switch_off': 'Режим выключения',
                   'time_of_work': 'Среднее время работы (необязательно), ч'}
-        widgets = {'time_of_work': forms.NumberInput(attrs={'required': False, 'step': '0.1', 'min': '0.1', 'max': '10'}),
+        widgets = {'time_of_work': forms.NumberInput(attrs={'required': True, 'step': '0.1', 'min': '0.1', 'max': '10'}),
                    'power': forms.NumberInput(attrs={'step': '0.5', 'min': '1', 'max': '100000'})}
 
 
@@ -25,6 +25,9 @@ class UserDeviceForm(forms.ModelForm):
         model = UserDevice
         fields = '__all__'
         exclude = ['device']
+        labels = {'days': 'День',
+                  'end_time': 'Время выключения',
+                  'start_time': 'Время включения',}
         widgets = {
             'start_time': TimePickerInput(attrs={'autocomplete': 'off'}).start_of('event day'),
             'end_time': TimePickerInput(attrs={'autocomplete': 'off'}).end_of('event day'),
