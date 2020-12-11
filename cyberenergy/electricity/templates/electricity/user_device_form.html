@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container content d-flex justify-content-center flex-column align-items-center">
+<h1>Введите нужную информацию</h1>
+  <form class="login" action="" method="post">
+      <h3 style="margin-bottom: 30px">Прибор: {{ device }} (on: {{ device.switch_on }}, off: {{ device.switch_off }})</h3>
+      {% csrf_token %}
+      {{ form.media}}
+      {{ form.as_p }}
+       <div class="d-flex justify-content-center">
+            <input class="submit-but" type="submit" value="Сохранить">
+            <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'projects:electricity:user_devices' pk=project_item.id %}';return false;">
+        </div>
+  </form>
+</div>
+{% endblock %}
