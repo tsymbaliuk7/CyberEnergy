@@ -1,12 +1,17 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers import serialize
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 from django.apps import apps
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DeleteView
-from .models import DayOfWeek, ElectricalDevices, UserDevice, SwitchType
+from .models import DayOfWeek, ElectricalDevices, UserDevice, SwitchType, Tariff, TariffZone, TariffRange, ProjectZone
 from .owner import OwnerDeleteView
-from .forms import DeviceForm, UserDeviceForm
+from .forms import DeviceForm, UserDeviceForm, ZoneForm, RangeForm
 import random
 from datetime import *
 
@@ -383,3 +388,104 @@ class ElectricityStatisticView(LoginRequiredMixin, View):
                    'device_max': device_max, 'zone_price': zone_price, 'zone_name': zone_name, 'days_list': days_list,
                    'sum_days': sum_days, 'max_val': max_val, 'total': total}
         return render(request, 'electricity/electricity_statistic.html', context)
+
+
+class ElectricityTariffListView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        tariffs = Tariff.objects.all()
+        zones = TariffZone.objects.all()
+        project_zones = ProjectZone.objects.filter(project=pk)
+        if not project_zones:
+            for zone in zones:
+                pz = ProjectZone(zone=zone, project=p, price=0.0)
+                pz.save()
+        project_zones = ProjectZone.objects.filter(project=pk)
+        initial = [pz.price for pz in project_zones]
+        name = [field.name for field in ZoneForm()]
+        initial = dict(zip(name, initial))
+        form = ZoneForm(initial=initial)
+        ranges = TariffRange.objects.filter(zone__project=p)
+        ctx = {'project': p, 'tariffs': tariffs, 'zones': zones, 'project_zones': project_zones, 'form': form, 'ranges': ranges}
+        return render(request, 'electricity/electricity_tariff.html', ctx)
+
+    def post(self, request, pk):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        tariffs = Tariff.objects.all()
+        zones = TariffZone.objects.all()
+        project_zones = ProjectZone.objects.filter(project=pk)
+        form = ZoneForm(request.POST)
+        if not form.is_valid():
+            ctx = {'project': p, 'tariffs': tariffs, 'zones': zones, 'project_zones': project_zones, 'form': form}
+            return render(request, 'electricity/electricity_tariff.html', ctx)
+        for pz in project_zones:
+            pz.price = form.cleaned_data['field{}'.format(pz.zone.id)]
+            pz.save()
+        return redirect(reverse('projects:electricity:tariffs', args=[pk]) + '#tariff_form')
+
+
+class ElectricityTariffAddView(LoginRequiredMixin, View):
+    def get(self, request, pk, tariff_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        tariff_zones = ProjectZone.objects.filter(project=p, zone__tariff_id=tariff_id)
+        form = RangeForm()
+        form.fields['zone'].queryset = tariff_zones
+        ctx = {'form': form, 'project': p}
+        return render(request, 'electricity/electricity_tariff_form.html', ctx)
+
+    def post(self, request, pk, tariff_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        form = RangeForm(request.POST)
+        if not form.is_valid():
+            ctx = {'form': form, 'project': p}
+            return render(request, 'electricity/electricity_tariff_form.html', ctx)
+        tariff_range = form.save(commit=False)
+        tariff_range.save()
+        return redirect(reverse('projects:electricity:tariffs', args=[pk]) + '#tariff-ranges')
+
+class ElectricityTariffUpdateView(LoginRequiredMixin, View):
+    def get(self, request, pk, tariff_id, range_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        tariff_zones = ProjectZone.objects.filter(project=p, zone__tariff_id=tariff_id)
+        tariff_range = get_object_or_404(TariffRange, pk=range_id)
+        form = RangeForm(instance=tariff_range)
+        form.fields['zone'].queryset = tariff_zones
+        ctx = {'form': form, 'project': p}
+        return render(request, 'electricity/electricity_tariff_form.html', ctx)
+
+    def post(self, request, pk, tariff_id, range_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        tariff_range = get_object_or_404(TariffRange, pk=range_id)
+        form = RangeForm(request.POST, instance=tariff_range)
+        if not form.is_valid():
+            ctx = {'form': form, 'project': p}
+            return render(request, 'electricity/electricity_tariff_form.html', ctx)
+        tariff_range = form.save(commit=False)
+        tariff_range.save()
+        return redirect(reverse('projects:electricity:tariffs', args=[pk]) + '#tariff-ranges')
+
+
+class ElectricityTariffDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk, range_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        user_device = get_object_or_404(TariffRange, id=range_id)
+        return render(request, template_name='electricity/tariff_range_delete.html', context={'device': user_device, 'project': p})
+
+    def post(self, request, pk, range_id):
+        Project = apps.get_model('projects', 'Project')
+        p = get_object_or_404(Project, pk=pk, owner=self.request.user)
+        TariffRange.objects.filter(id=range_id).delete()
+        return redirect(reverse('projects:electricity:tariffs', args=[pk]) + '#tariff-ranges')
+
+
+
+
+
+

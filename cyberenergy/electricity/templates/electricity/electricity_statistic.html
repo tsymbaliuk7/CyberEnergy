@@ -45,7 +45,7 @@
                 <canvas id="day_max" style="background-color: white"></canvas>
         </div>
 
-        <div class="chart">
+        <div class="chart" id="tariff">
                 <canvas id="zone" style="background-color: white"></canvas>
         </div>
         <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
@@ -264,6 +264,9 @@ var temperatureChart = new Chart(temperatureCtx, {
         }
     }
 });
+
+
+
 
 </script>
 {% endblock %}

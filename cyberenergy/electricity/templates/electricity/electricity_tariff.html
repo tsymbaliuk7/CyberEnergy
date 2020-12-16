@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="container content">
+        {% include 'projects/inc/project_title.html' with project=project %}
+        {% include 'projects/inc/project_apps.html' with project=project %}
+        <h2 style="margin-bottom: 30px; text-align: center">Введите информацию о тарифных планах</h2>
+        <form action="" method="post" id="tariff_form">
+            {% csrf_token %}
+            {{ form.media }}
+            <div class="row" style="height: 300px">
+                <div class="col-md-4" style="height: 100%">
+                    <div style="padding: 20px; border-radius: 20px; border: #5b72f5 5px solid; height: 100%">
+                        <h3 style="margin-bottom: 20px">Однозонный</h3>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>Единый тариф, грн: </p>
+                            <div>{{ form.field1 }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="height: 100%">
+                    <div style="padding: 20px; border-radius: 20px; border: #5b72f5 5px solid; height: 100%">
+                        <h3 style="margin-bottom: 20px">Двухзонный</h3>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>День, грн: </p>
+                            <div>{{ form.field2 }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>Ночь, грн: </p>
+                            <div>{{ form.field3 }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="height: 100%">
+                    <div style="padding: 20px; border-radius: 20px; border: #5b72f5 5px solid; height: 100%">
+                        <h3 style="margin-bottom: 20px">Трехзонный</h3>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>Пик, грн: </p>
+                            <div>{{ form.field4 }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>Полупик, грн: </p>
+                            <div>{{ form.field5 }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between" style="font-size: 18px">
+                            <p>Ночь, грн: </p>
+                            <div>{{ form.field6 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <input style="background-color: #5b72f5 !important;" class="submit-but" type="submit" value="Сохранить">
+            </div>
+        </form>
+        <div class="row" style="margin-top: 50px">
+
+            {% for tariff in tariffs %}
+                {% if tariff.id != 1 %}
+                <div class="col-md-6" id="tariff-ranges">
+                    <h3 style="text-align: center; margin-top: 30px; margin-bottom: 20px">{{ tariff.name }} </h3>
+                    <div>
+                        {% for r in ranges %}
+                            {% if r.zone.zone.tariff == tariff %}
+                                <div class="row">
+                                    <div class="col-md-4" style="text-align: center">
+                                        <div>{{ r.start_time }} - {{ r.end_time }}</div>
+                                    </div>
+                                    <div class="col-md-4" style="text-align: center">
+                                        <div>{{ r.zone }}</div>
+                                    </div>
+                                    <div class="col-md-4" style="text-align: center">
+                                         <div class="d-flex">
+                                             <a style="color: #5b72f5" href="{% url 'projects:electricity:tariffs_update' pk=project.id tariff_id=tariff.id range_id=r.id %}">Update</a> |
+                                             <a style="color: #5b72f5" href="{% url 'projects:electricity:tariffs_delete' pk=project.id range_id=r.id %}">Delete</a>
+                                         </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div style="height: 2px; background-color: #5b72f5; margin-bottom: 10px; margin-top: 5px"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-center">
+                                    <a href="{% url 'projects:electricity:tariffs_add' pk=project.id tariff_id=tariff.id %}"><img style="height: 25px" src="{% static 'home/img/plus.svg' %}"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}
