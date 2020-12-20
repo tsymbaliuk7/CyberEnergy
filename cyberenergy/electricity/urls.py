@@ -2,7 +2,8 @@ from django.urls import path
 from django.views.generic import TemplateView
 from .views import ElectricityDevicesView, ElectricityDeviceCreateView\
      , ElectricityDeviceUpdateView, ElectricityDeviceDeleteView, ElectricityUserDevicesView, ElectricityUserDevicesAddView\
-    , ElectricityUserDevicesUpdateView, ElectricityUserDevicesDeleteView, ElectricityStatisticView, ElectricityUserDevicesCloneView
+    , ElectricityUserDevicesUpdateView, ElectricityUserDevicesDeleteView, ElectricityStatisticView, ElectricityUserDevicesCloneView\
+    , ElectricityTariffListView, ElectricityTariffAddView, ElectricityTariffUpdateView, ElectricityTariffDeleteView
 
 app_name = 'electricity'
 urlpatterns = [
@@ -16,4 +17,8 @@ urlpatterns = [
     path('user_devices/delete/<int:device_id>', ElectricityUserDevicesDeleteView.as_view(), name='user_devices_delete'),
     path('user_devices/clone/<int:device_id>', ElectricityUserDevicesCloneView.as_view(), name='user_devices_clone'),
     path('statistics', ElectricityStatisticView.as_view(), name='statistics'),
+    path('tariffs', ElectricityTariffListView.as_view(), name='tariffs'),
+    path('tariffs/add/<int:tariff_id>', ElectricityTariffAddView.as_view(), name='tariffs_add'),
+    path('tariffs/<int:tariff_id>/update/<int:range_id>', ElectricityTariffUpdateView.as_view(), name='tariffs_update'),
+    path('tariffs/delete/<int:range_id>', ElectricityTariffDeleteView.as_view(), name='tariffs_delete'),
 ]
