@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="container content d-flex justify-content-center flex-column align-items-center">
+        <h2 style="margin-bottom: 30px; text-align: center">Введите информацию о башне</h2>
+        <form action="" method="post" class="login">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.as_p }}
+            <div class="d-flex justify-content-center">
+                <input class="submit-but" type="submit" value="Отменить" onclick="window.location.href='{% url 'projects:windpower:towers_list' pk=project.id wind_id=windmill.id%}';return false;">
+                <input class="submit-but" type="submit" value="Сохранить" >
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

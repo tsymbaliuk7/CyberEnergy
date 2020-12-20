@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:pk>/metrology', include('metrology.urls')),
     path('<int:pk>/house/', include('house.urls')),
     path('<int:pk>/electricity/', include('electricity.urls')),
+    path('<int:pk>/windpower/', include('windpower.urls')),
     path('<int:pk>/delete', ProjectsDeleteView.as_view(), name='delete'),
     path('<int:pk>/update', ProjectsUpdateView.as_view(), name='update'),
 ]

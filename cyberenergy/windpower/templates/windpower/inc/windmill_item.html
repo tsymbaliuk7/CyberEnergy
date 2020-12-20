@@ -1,0 +1,16 @@
+{% load static %}
+    <div style="background-color: #00c7a9; width: 100%; padding: 30px; border-radius: 40px; margin-bottom: 30px">
+
+        <div class="d-flex flex-column justify-content-between" style="width: 100%; height: 100%">
+            <a href="{% url 'projects:windpower:towers_list' pk=project.id wind_id=windmill.id%}">
+                <p style="color: white; font-size: 25px">Название: <span style="font-weight: lighter">{{ windmill }}</span></p>
+            </a>
+            <div>
+                <p style="color: white; font-size: 25px">Цена: <span style="font-weight: lighter">{{ windmill.price }} грн</span></p>
+            </div>
+            <div style="margin-left: auto; margin-right: 0">
+                <a href="{% url 'projects:windpower:update' pk=project.id wind_id=windmill.id %}"><img style="width: 35px" src="{% static 'home/img/update.svg' %}"></a>
+                <a href="{% url 'projects:windpower:delete' pk=project.id wind_id=windmill.id %}"><img style="width: 35px" src="{% static 'home/img/delete.svg' %}"></a>
+            </div>
+        </div>
+    </div>

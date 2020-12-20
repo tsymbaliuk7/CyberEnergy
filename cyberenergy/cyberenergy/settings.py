@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'metrology.apps.MetrologyConfig',
     'projects.apps.ProjectsConfig',
+    'windpower.apps.WindpowerConfig'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content container d-flex flex-column align-items-center">
+    <h1>Удалить ветряк</h1>
+    <p style="margin-bottom: 30px">Вы действительно хотите удалить ветряк: {{ windmill }}?</p>
+    <form action="" method="POST">
+      {% csrf_token %}
+        <div class="d-flex justify-content-center">
+            <input class="submit-but" type="submit" value="Отмена" onclick="window.location.href='{% url 'projects:windpower:detail' pk=project.id %}';return false;">
+            <input class="submit-but" type="submit" value="Да, удалить.">
+        </div>
+    </form>
+</div>
+{% endblock %}

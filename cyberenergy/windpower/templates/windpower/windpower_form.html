@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="container content d-flex justify-content-center flex-column align-items-center">
+        <h2 style="margin-bottom: 30px; text-align: center">Введите информацию о ветряках</h2>
+        <form action="" method="post" class="login">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.as_p }}
+            <div class="d-flex justify-content-center">
+                <input class="submit-but" type="submit" value="Сохранить" >
+            </div>
+            <div class="d-flex justify-content-center">
+                <input class="submit-but" type="submit" value="Вернуться" onclick="window.location.href='{% url 'projects:windpower:detail' pk=project.id %}';return false;">
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
