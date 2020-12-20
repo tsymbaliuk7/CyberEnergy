@@ -45,7 +45,7 @@
             {% endfor %}
             </div>
         {% endfor %}
-    <button onclick="window.location.href='{% url 'projects:electricity:statistics' pk=project.id %}';return false;" style="text-align: center" class="submit-but center-but">Подтвердить</button>
+    <button onclick="window.location.href='{% url 'projects:electricity:tariffs' pk=project.id %}';return false;" style="text-align: center" class="submit-but center-but">Подтвердить</button>
     </div>
 
 {% endblock %}

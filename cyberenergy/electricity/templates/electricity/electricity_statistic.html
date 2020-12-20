@@ -45,8 +45,9 @@
                 <canvas id="day_max" style="background-color: white"></canvas>
         </div>
 
-        <div class="chart">
+        <div class="chart" id="tariff">
                 <canvas id="zone" style="background-color: white"></canvas>
+                <button  onclick="window.location.href='{% url 'projects:electricity:tariffs' pk=project.id %}';return false;" style="text-align: center; background-color: #5b72f5 !important;" class="submit-but center-but">Изменить тариф</button>
         </div>
         <button class="submit-but center-but" onclick="window.print()">Распечатать эту страницу</button>
     </div>
@@ -264,6 +265,9 @@ var temperatureChart = new Chart(temperatureCtx, {
         }
     }
 });
+
+
+
 
 </script>
 {% endblock %}
