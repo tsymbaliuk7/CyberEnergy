@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from .views import WindpowerListView, WindmillCreateView, WindmillUpdateView, WindmillDeleteView, TowerListView, \
-    TowerCreateView, TowerUpdateView, TowerDeleteView
+    TowerCreateView, TowerUpdateView, TowerDeleteView, WindmillInfoView
 
 app_name = 'windpower'
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:wind_id>/towers/create', TowerCreateView.as_view(), name='towers_create'),
     path('<int:wind_id>/towers/delete/<int:tower_id>', TowerDeleteView.as_view(), name='towers_delete'),
     path('<int:wind_id>/towers/update/<int:tower_id>', TowerUpdateView.as_view(), name='towers_update'),
+    path('<int:wind_id>/towers/<int:tower_id>/info', WindmillInfoView.as_view(), name='info'),
 ]

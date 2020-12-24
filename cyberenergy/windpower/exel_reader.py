@@ -8,6 +8,7 @@ from .models import *
 from pytz import timezone
 import numpy as np
 from django.apps import apps
+import random
 
 
 def exel_reader(obj):
@@ -126,5 +127,17 @@ def exel_reader(obj):
         sd.save()
 
 
-def fill_wind_characteristics(windmill):
-    pass
+def fill_wind_characteristics(max_value):
+    result = []
+    for i in range(1, 3):
+        result.append(0)
+    choice = random.choice([i for i in range(17, 22)])
+    rand = np.logspace(np.log(5), np.log(max_value), choice, base=np.exp(1))
+    rand = [round(i, 2) for i in rand]
+    for r in rand:
+        result.append(r)
+    if len(result) - 1 < 25:
+        for i in range(0, 25 - len(result) + 1):
+            result.append(max_value)
+    result = dict(zip(list(range(1, 26)), result))
+    return result

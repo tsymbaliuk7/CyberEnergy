@@ -11,6 +11,7 @@ class ProjectForm(forms.ModelForm):
         fields = ['name', 'begin_date', 'end_date', 'region']
         labels = {'name': 'Название проекта', 'begin_date': 'Дата начала', 'end_date': 'Дата конца', 'region': 'Регион'}
         widgets = {
+            'name': forms.TextInput(attrs={'autocomplete': 'off'}),
             'begin_date': DatePickerInput(format='%d.%m.%Y', attrs={'autocomplete': 'off'}).start_of('event days'),
             'end_date': DatePickerInput(format='%d.%m.%Y', attrs={'autocomplete': 'off'}).end_of('event days'),
         }

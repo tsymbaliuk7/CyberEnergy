@@ -6,7 +6,10 @@
                 <p style="color: white; font-size: 25px">Название: <span style="font-weight: lighter">{{ windmill }}</span></p>
             </a>
             <div>
-                <p style="color: white; font-size: 25px">Цена: <span style="font-weight: lighter">{{ windmill.price }} грн</span></p>
+                <p style="color: white; font-size: 25px">Тип: <span style="font-weight: lighter">{{ windmill.type }}</span></p>
+            </div>
+            <div>
+                <p style="color: white; font-size: 25px">Цена: <span style="font-weight: lighter">{{ windmill.price }} евро</span></p>
             </div>
             <div style="margin-left: auto; margin-right: 0">
                 <a href="{% url 'projects:windpower:update' pk=project.id wind_id=windmill.id %}"><img style="width: 35px" src="{% static 'home/img/update.svg' %}"></a>

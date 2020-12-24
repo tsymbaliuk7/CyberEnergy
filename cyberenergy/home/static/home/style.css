@@ -81,6 +81,10 @@ h1{
     margin: 30px 5px 0px;
 }
 
+.submit-but:focus{
+    outline: none;
+}
+
 .footer{
     color: white;
     background-color: #007EA7;
@@ -157,4 +161,8 @@ h1{
 .mathjax-left{
     text-align: left !important;
     display: inline !important;
+}
+
+button:focus{
+    outline: none;
 }

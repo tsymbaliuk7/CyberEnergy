@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div class="container content">
+        {% load static %}
+        {% include 'projects/inc/project_title.html' with project=project%}
+        {% include 'projects/inc/project_apps.html' with project=project %}
+        <div class="chart">
+                <canvas id="windmill" style="background-color: white"></canvas>
+        </div>
+        <p>Суммарные объемы генерирования электроэнергии: <span style="font-weight: normal"> {{ total_power }} кВт*ч</span></p>
+        <p>Объемы сокращений выбросов парниковых газов в тонах СО2: <span style="font-weight: normal"> {{ co2|floatformat }} т.</span></p>
+        <p>Доход от продажи электрической энергии по «зеленому» тарифу: <span style="font-weight: normal"> {{ income|floatformat }} евро (0.164 евро за 1 кВт*ч)</span></p>
+        <p>Доход от продажи единиц сокращения выбросов: <span style="font-weight: normal"> {{ co2_income|floatformat }} евро</span></p>
+        <p>Когда окупится ветряк при таких погодных условиях: <span style="font-weight: normal"> {{ time_to_clean_income|floatformat }} дней</span></p>
+        <button class="submit-but center-but" onclick="window.print()">Сформировать отчет</button>
+    </div>
+
+    <script>
+    var temperatureCtx = document.getElementById('windmill').getContext('2d');
+var temperatureChart = new Chart(temperatureCtx, {
+    type: 'line',
+
+    data: {
+        labels: {{ wind_fixed }},
+        datasets: [{
+            label: 'Энергия, кВт*ч',
+            data: {{ power }},
+            backgroundColor:
+                'rgba(0, 199, 169, 0.5)',
+            borderColor:
+                'rgba(0,199,169)',
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'top',
+        },
+        tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+        hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+        title: {
+            display: true,
+            text: 'График количества произведенной энергии',
+            fontSize: 20
+        },
+        scales: {
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Скорость ветра, м/c',
+                fontSize: 15
+                }
+            }]
+        }
+    }
+});
+    </script>
+{% endblock %}

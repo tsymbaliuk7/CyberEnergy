@@ -8,10 +8,8 @@
             {{ form.media }}
             {{ form.as_p }}
             <div class="d-flex justify-content-center">
-                <input class="submit-but" type="submit" value="Сохранить" >
-            </div>
-            <div class="d-flex justify-content-center">
                 <input class="submit-but" type="submit" value="Вернуться" onclick="window.location.href='{% url 'projects:windpower:detail' pk=project.id %}';return false;">
+                <input class="submit-but" type="submit" value="Сохранить" >
             </div>
         </form>
     </div>
